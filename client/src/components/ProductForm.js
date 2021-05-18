@@ -1,35 +1,42 @@
 import React, {useState} from 'react';
 import axios from 'axios';
+import {Link, navigate} from '@reach/router';
 
 const ProductForm = props =>{
-    const [title, setTitle] = useState("");
-    const [price, setPrice] = useState("");
-    const [description, setDescription] = useState("");
-
-    const submitHandler = e => {
+    const [formInfo, setFormInfo] = useState({
+        title: "",
+        price: "",
+        description: ""
+    });
+    const submitHandler = (e)=>{
         e.preventDefault();
-        axios.post('http://localhost:8000/api/product/new', {
-            title,
-            price,
-            description
-        })
-            .then(response=>console.log("Response: ", response))
+        axios.post('http://localhost:8000/api/product/new', formInfo)
+            .then(response=>{
+                console.log("Response: ", response)
+                navigate('/')
+            })
             .catch(err=>console.log("Error: ", err))
     }
-
+    const changeHandler = (e) =>{
+        setFormInfo({
+            ...formInfo,
+            [e.target.name]: e.target.value
+        })
+    }
     return(
         <div className="container mt-5">
-            <form onSubmit={submitHandler} className="w-50 mx-auto">
+            <Link to="/" className="text-decoration-none float-end">Dashboard</Link>
+            <h1 className="text-center">Create Product</h1>
+            <form onSubmit={submitHandler} className="w-50 mx-auto mt-3">
                 <label htmlFor="">Title</label>
-                <input type="text" onChange={e => setTitle(e.target.value)} className="form-control d-inline"/>
-                <label htmlFor="">Price</label>
-                <input type="text" onChange={e => setPrice(e.target.value)} className="form-control d-inline" />
-                <label htmlFor="">Description</label>
-                <input type="text" onChange={e => setDescription(e.target.value)} className="form-control d-inline" />
+                <input type="text" name="title" onChange={changeHandler} className="form-control"/>
+                <label htmlFor="" className="mt-3">Price</label>
+                <input type="text"  name="price" onChange={changeHandler} className="form-control" />
+                <label htmlFor="" className="mt-3">Description</label>
+                <textarea name="description" id="" onChange={changeHandler} cols="30" rows="10" className="form-control" />
                 <input type="submit" className="btn btn-primary mt-3" value="Create Product" />
             </form>
         </div>
     )
 }
-
 export default ProductForm;

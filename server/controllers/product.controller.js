@@ -11,7 +11,12 @@ module.exports.createProduct = (request, response) => {
         .catch(err => response.json(err));
 }
 module.exports.findProducts = (request, response) => {
-    Product.find()
-        .then(product => response.json({ Products: product }))
+    Product.find({})
+        .then(products => response.json({ Products: products }))
         .catch(err => response.json({ message: "Something went wrong", error: err }));
 };
+module.exports.findOneProduct = (request, response) =>{
+    Product.findOne({_id: request.params.id})
+        .then(product => response.json({Product: product}))
+        .catch(err => response.json(err))
+}
