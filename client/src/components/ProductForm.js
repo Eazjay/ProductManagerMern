@@ -8,12 +8,18 @@ const ProductForm = props =>{
         price: "",
         description: ""
     });
+    const [errors, setErrors] = useState({})
     const submitHandler = (e)=>{
         e.preventDefault();
         axios.post('http://localhost:8000/api/product/new', formInfo)
             .then(response=>{
                 console.log("Response: ", response)
-                navigate('/')
+                if(response.data.Product){
+                    navigate('/')
+                } 
+                else{
+                    setErrors(response.data.errors)
+                }
             })
             .catch(err=>console.log("Error: ", err))
     }
@@ -30,10 +36,12 @@ const ProductForm = props =>{
             <form onSubmit={submitHandler} className="w-50 mx-auto mt-3">
                 <label htmlFor="">Title</label>
                 <input type="text" name="title" onChange={changeHandler} className="form-control"/>
+                {errors.title? <p className="text-danger">{errors.title.message}</p>: ""}
                 <label htmlFor="" className="mt-3">Price</label>
                 <input type="text"  name="price" onChange={changeHandler} className="form-control" />
                 <label htmlFor="" className="mt-3">Description</label>
                 <textarea name="description" id="" onChange={changeHandler} cols="30" rows="10" className="form-control" />
+                {errors.description? <p className="text-danger">{errors.description.message}</p>: ""}
                 <input type="submit" className="btn btn-primary mt-3" value="Create Product" />
             </form>
         </div>
